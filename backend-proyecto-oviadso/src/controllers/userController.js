@@ -1,554 +1,411 @@
 const {
-
-
     allUsers,
     getUserByIdService,
     createUserService,
     updateUserService,
     deleteUserService,
-    confirmEmailService
-
-
+    confirmEmailService,
+    forgotPasswordService,
+    resetPasswordService
 } = require("../services/userService");
 
-
-
 const { sendEmail } = require("../services/emailService");
-
 const { getTemplate } = require("../services/templateService");
-
 const { Response } = require("../functions/response");
 
-
-
-
-
-
 // ==========================================
-// OBTENER TODOS
+// OBTENER TODOS LOS USUARIOS
 // ==========================================
-
-
-const getAllUsers = async(req,res)=>{
-
-
-    try{
-
+const getAllUsers = async (req, res) => {
+    try {
 
         const users = await allUsers();
 
-
-
-        return res.status(200).json(
-
-            new Response(
-
-                true,
-
-                "Usuarios obtenidos exitosamente",
-
-                users,
-
-                null
-
-            ).json
-
+        const response = new Response(
+            true,
+            "Usuarios obtenidos exitosamente",
+            users,
+            null
         );
 
+        return res.status(200).json(response.json);
 
+    } catch (error) {
 
-    }catch(error){
+        console.error("Error al obtener usuarios:", error);
 
-
-        return res.status(500).json(
-
-            new Response(
-
-                false,
-
-                "Error al obtener usuarios",
-
-                null,
-
-                error.message
-
-            ).json
-
+        const response = new Response(
+            false,
+            "Error al obtener usuarios",
+            null,
+            error.message
         );
 
-
+        return res.status(500).json(response.json);
     }
-
-
 };
 
-
-
-
-
-
-
-
-
 // ==========================================
-// OBTENER POR ID
+// OBTENER USUARIO POR ID
 // ==========================================
+const getUserById = async (req, res) => {
+    try {
 
-
-const getUserById = async(req,res)=>{
-
-
-    try{
-
-
-        const {id}=req.params;
-
-
+        const { id } = req.params;
 
         const user = await getUserByIdService(id);
 
+        if (!user) {
 
-
-
-        if(!user){
-
-
-            return res.status(404).json(
-
-                new Response(
-
-                    false,
-
-                    "Usuario no encontrado",
-
-                    null,
-
-                    null
-
-                ).json
-
+            const response = new Response(
+                false,
+                "Usuario no encontrado",
+                null,
+                null
             );
 
-
+            return res.status(404).json(response.json);
         }
 
-
-
-
-        return res.status(200).json(
-
-            new Response(
-
-                true,
-
-                "Usuario encontrado",
-
-                user,
-
-                null
-
-            ).json
-
+        const response = new Response(
+            true,
+            "Usuario encontrado",
+            user,
+            null
         );
 
+        return res.status(200).json(response.json);
 
+    } catch (error) {
 
+        console.error("Error al buscar usuario:", error);
 
-    }catch(error){
-
-
-        return res.status(500).json(
-
-            new Response(
-
-                false,
-
-                "Error al buscar usuario",
-
-                null,
-
-                error.message
-
-            ).json
-
+        const response = new Response(
+            false,
+            "Error al buscar usuario",
+            null,
+            error.message
         );
 
-
+        return res.status(500).json(response.json);
     }
-
-
 };
-
-
-
-
-
-
-
-
 
 // ==========================================
 // CREAR USUARIO
 // ==========================================
-
-
-const createUser = async(req,res)=>{
-
-
-    try{
-
+const createUser = async (req, res) => {
+    try {
 
         const user = await createUserService(req.body);
 
+        const template = getTemplate("confirmEmail", {
 
+            "@nombreEmpresa": "OVIADSO",
 
+            "@name": user.username,
 
-     const template = getTemplate(
-    "confirmEmail",
-    {
-        "@name": "Natalia Reyes Pancha",
-        "@nombreEmpresa": "OVIADSO",
-        "@link": "http://localhost:3001",
-        "@nameBtn": "Confirmar cuenta"
-    }
-);
+            "@link": `http://localhost:3000/api/user/confirm-email/${user.id}`,
 
-console.log(template.html);
-
-
-// Verificar plantilla antes de enviar
-console.log(template.html);
-
-
+            "@nameBtn": "Crear cuenta"
+        });
 
         await sendEmail(
-
-
             user.email,
-
-
             template.subject,
-
-
             "Confirmación de correo",
-
-
             template.html
-
-
         );
 
-
-
-
-
-
-
-        return res.status(201).json(
-
-
-            new Response(
-
-                true,
-
-                "Usuario creado correctamente y correo enviado",
-
-                user,
-
-                null
-
-
-            ).json
-
-
+        const response = new Response(
+            true,
+            "Usuario creado correctamente y correo enviado",
+            user,
+            null
         );
 
+        return res.status(201).json(response.json);
 
+    } catch (error) {
 
+        console.error("Error al crear usuario:", error);
 
-    }catch(error){
-
-
-
-        console.log(error);
-
-
-
-        return res.status(500).json(
-
-
-            new Response(
-
-                false,
-
-                "Error al crear usuario",
-
-                null,
-
-                error.message
-
-
-            ).json
-
-
+        const response = new Response(
+            false,
+            "Error al crear usuario",
+            null,
+            error.message
         );
 
-
+        return res.status(500).json(response.json);
     }
-
-
 };
 
-
-
-
-
-
-
-
-
 // ==========================================
-// ACTUALIZAR
+// ACTUALIZAR USUARIO
 // ==========================================
+const updateUser = async (req, res) => {
+    try {
 
+        const { id } = req.params;
 
-const updateUser = async(req,res)=>{
+        const user = await updateUserService(id, req.body);
 
+        if (!user) {
 
-    try{
-
-
-        const {id}=req.params;
-
-
-
-        const user = await updateUserService(
-
-            id,
-
-            req.body
-
-        );
-
-
-
-
-        return res.status(200).json(
-
-            new Response(
-
-                true,
-
-                "Usuario actualizado correctamente",
-
-                user,
-
-                null
-
-
-            ).json
-
-        );
-
-
-
-
-    }catch(error){
-
-
-        return res.status(500).json(
-
-            new Response(
-
+            const response = new Response(
                 false,
-
-                "Error al actualizar usuario",
-
+                "Usuario no encontrado",
                 null,
+                null
+            );
 
-                error.message
+            return res.status(404).json(response.json);
+        }
 
-            ).json
-
+        const response = new Response(
+            true,
+            "Usuario actualizado correctamente",
+            user,
+            null
         );
 
+        return res.status(200).json(response.json);
 
+    } catch (error) {
+
+        console.error("Error al actualizar usuario:", error);
+
+        const response = new Response(
+            false,
+            "Error al actualizar usuario",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
     }
-
-
 };
 
-
-
-
-
-
-
-
 // ==========================================
-// ELIMINAR
+// ELIMINAR / INACTIVAR USUARIO
 // ==========================================
+const deleteUser = async (req, res) => {
+    try {
 
+        const { id } = req.params;
 
-const deleteUser = async(req,res)=>{
+        const result = await deleteUserService(id);
 
-
-    try{
-
-
-        const {id}=req.params;
-
-
-
-        await deleteUserService(id);
-
-
-
-
-        return res.status(200).json(
-
-            new Response(
-
-                true,
-
-                "Usuario eliminado correctamente",
-
-                null,
-
-                null
-
-            ).json
-
+        const response = new Response(
+            true,
+            "Usuario eliminado correctamente",
+            result,
+            null
         );
 
+        return res.status(200).json(response.json);
 
+    } catch (error) {
 
+        console.error("Error al eliminar usuario:", error);
 
-    }catch(error){
-
-
-
-        return res.status(500).json(
-
-            new Response(
-
-                false,
-
-                "Error al eliminar usuario",
-
-                null,
-
-                error.message
-
-            ).json
-
-
+        const response = new Response(
+            false,
+            "Error al eliminar usuario",
+            null,
+            error.message
         );
 
-
+        return res.status(500).json(response.json);
     }
-
-
 };
-
-
-
-
-
-
-
-
 
 // ==========================================
 // CONFIRMAR CORREO
 // ==========================================
+const confirmEmail = async (req, res) => {
+    try {
 
-
-const confirmEmail = async(req,res)=>{
-
-
-    try{
-
-
-        const {id}=req.params;
-
-
+        const { id } = req.params;
 
         const user = await confirmEmailService(id);
 
+        if (!user) {
 
-
-
-        return res.status(200).json(
-
-            new Response(
-
-                true,
-
-                "Correo confirmado correctamente",
-
-                user,
-
-                null
-
-
-            ).json
-
-
-        );
-
-
-
-
-    }catch(error){
-
-
-
-        return res.status(500).json(
-
-            new Response(
-
+            const response = new Response(
                 false,
-
-                "Error al confirmar correo",
-
+                "Usuario no encontrado",
                 null,
+                null
+            );
 
-                error.message
+            return res.status(404).json(response.json);
+        }
 
-
-            ).json
-
-
+        const response = new Response(
+            true,
+            "Correo confirmado correctamente",
+            user,
+            null
         );
 
+        return res.status(200).json(response.json);
 
+    } catch (error) {
+
+        console.error("Error al confirmar correo:", error);
+
+        const response = new Response(
+            false,
+            "Error al confirmar correo",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
     }
-
-
 };
 
+// ==========================================
+// SOLICITAR RESTABLECIMIENTO DE CONTRASEÑA
+// ==========================================
+const forgotPassword = async (req, res) => {
+    try {
 
+        const { email } = req.body;
 
+        // Validar que llegue el correo
+        if (!email) {
 
+            const response = new Response(
+                false,
+                "El correo es obligatorio",
+                null,
+                "Debe enviar el email"
+            );
 
+            return res.status(400).json(response.json);
+        }
 
+        const result = await forgotPasswordService(email);
 
+        // Usuario no encontrado
+        if (!result) {
 
-module.exports={
+            const response = new Response(
+                false,
+                "Usuario no encontrado",
+                null,
+                "No existe un usuario registrado con ese correo"
+            );
 
+            return res.status(404).json(response.json);
+        }
 
+        const response = new Response(
+            true,
+            "Correo de restablecimiento enviado correctamente",
+            null,
+            null
+        );
+
+        return res.status(200).json(response.json);
+
+    } catch (error) {
+
+        console.error(
+            "Error al solicitar restablecimiento:",
+            error
+        );
+
+        const response = new Response(
+            false,
+            "Error al solicitar restablecimiento",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
+    }
+};
+
+// ==========================================
+// RESTABLECER CONTRASEÑA
+// ==========================================
+const resetPassword = async (req, res) => {
+    try {
+
+        const { token, newPassword } = req.body;
+
+        // Validar datos
+        if (!token || !newPassword) {
+
+            const response = new Response(
+                false,
+                "Datos incompletos",
+                null,
+                "Debe enviar token y nueva contraseña"
+            );
+
+            return res.status(400).json(response.json);
+        }
+
+        const result = await resetPasswordService(
+            token,
+            newPassword
+        );
+
+        // Token inválido o expirado
+        if (!result) {
+
+            const response = new Response(
+                false,
+                "Token inválido o expirado",
+                null,
+                "El enlace de restablecimiento ya no es válido"
+            );
+
+            return res.status(400).json(response.json);
+        }
+
+        const response = new Response(
+            true,
+            "Contraseña restablecida correctamente",
+            null,
+            null
+        );
+
+        return res.status(200).json(response.json);
+
+    } catch (error) {
+
+        console.error(
+            "Error al restablecer contraseña:",
+            error
+        );
+
+        const response = new Response(
+            false,
+            "Error al restablecer contraseña",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
+    }
+};
+
+// ==========================================
+// EXPORTAR CONTROLADORES
+// ==========================================
+module.exports = {
     getAllUsers,
-
     getUserById,
-
     createUser,
-
     updateUser,
-
     deleteUser,
-
-    confirmEmail
-
-
+    confirmEmail,
+    forgotPassword,
+    resetPassword
 };

@@ -1,22 +1,18 @@
 const express = require("express");
-
 const router = express.Router();
 
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
-
     getAllUsers,
     getUserById,
     createUser,
     updateUser,
     deleteUser,
-    confirmEmail
-
+    confirmEmail,
+    forgotPassword,
+    resetPassword
 } = require("../controllers/userController");
-
-
-
-
 
 /**
  * @swagger
@@ -25,205 +21,90 @@ const {
  *   description: Gestión de usuarios
  */
 
-
-
-
-
-/**
- * @swagger
- * /api/user/users:
- *   get:
- *     summary: Obtener todos los usuarios
- *     tags: [Users]
- *     responses:
- *       200:
- *         description: Lista de usuarios obtenida correctamente
- */
+// ==========================================
+// OBTENER TODOS LOS USUARIOS
+// ==========================================
 
 router.get(
     "/users",
+    verifyToken,
     getAllUsers
 );
 
-
-
-
-
-
-/**
- * @swagger
- * /api/user/users/{id}:
- *   get:
- *     summary: Obtener usuario por ID
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         example: 1
- *     responses:
- *       200:
- *         description: Usuario encontrado
- *       404:
- *         description: Usuario no encontrado
- */
-
+// ==========================================
+// OBTENER USUARIO POR ID
+// ==========================================
 
 router.get(
     "/users/:id",
+    verifyToken,
     getUserById
 );
 
-
-
-
-
-
-/**
- * @swagger
- * /api/user/users:
- *   post:
- *     summary: Crear usuario
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *                 example: Natalia
- *               email:
- *                 type: string
- *                 example: natalia@gmail.com
- *               password:
- *                 type: string
- *                 example: 123456
- *               role:
- *                 type: string
- *                 example: aprendiz
- *               postJob:
- *                 type: string
- *                 example: ingeniera
- *               status:
- *                 type: string
- *                 example: Activo
- *               documentId:
- *                 type: string
- *                 example: 123456789
- *
- *     responses:
- *       201:
- *         description: Usuario creado correctamente
- */
-
+// ==========================================
+// CREAR USUARIO
+// ==========================================
 
 router.post(
     "/users",
+    verifyToken,
     createUser
 );
 
-
-
-
-
-
-/**
- * @swagger
- * /api/user/users/{id}:
- *   put:
- *     summary: Actualizar usuario
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *
- *     responses:
- *       200:
- *         description: Usuario actualizado correctamente
- */
-
+// ==========================================
+// ACTUALIZAR USUARIO
+// ==========================================
 
 router.put(
     "/users/:id",
+    verifyToken,
     updateUser
 );
 
-
-
-
-
-
-/**
- * @swagger
- * /api/user/users/{id}:
- *   delete:
- *     summary: Eliminar usuario
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *
- *     responses:
- *       200:
- *         description: Usuario eliminado correctamente
- */
-
+// ==========================================
+// ELIMINAR USUARIO
+// ==========================================
 
 router.delete(
     "/users/:id",
+    verifyToken,
     deleteUser
 );
 
-
-
-
-
-
-/**
- * @swagger
- * /api/user/confirm-email/{id}:
- *   get:
- *     summary: Confirmar correo electrónico
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *
- *     responses:
- *       200:
- *         description: Correo confirmado correctamente
- */
-
+// ==========================================
+// CONFIRMAR CORREO
+// ==========================================
+// NO lleva verifyToken.
+// El usuario llega desde el enlace recibido
+// en su correo electrónico.
 
 router.get(
     "/confirm-email/:id",
     confirmEmail
 );
 
+// ==========================================
+// SOLICITAR RESTABLECIMIENTO DE CONTRASEÑA
+// ==========================================
+// NO lleva verifyToken.
+// El usuario todavía no está autenticado.
 
+router.post(
+    "/forgot-password",
+    forgotPassword
+);
 
+// ==========================================
+// RESTABLECER CONTRASEÑA
+// ==========================================
+// NO lleva verifyToken.
+// La seguridad se realiza mediante el token
+// generado específicamente para recuperar
+// la contraseña.
 
-
+router.post(
+    "/reset-password",
+    resetPassword
+);
 
 module.exports = router;

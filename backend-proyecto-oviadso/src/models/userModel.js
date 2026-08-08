@@ -57,12 +57,26 @@ const User = db.define(
 
         createdAt: {
             type: DataTypes.DATE,
-            field: "createAt"
+            field: "createdAt"
         },
 
         updatedAt: {
             type: DataTypes.DATE,
-            field: "updateAd"
+            field: "updatedAt"
+        },
+
+        // ==========================================
+        // RESTABLECIMIENTO DE CONTRASEÑA
+        // ==========================================
+
+        resetPasswordToken: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
+
+        resetPasswordExpires: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     },
     {
