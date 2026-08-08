@@ -3,7 +3,6 @@ const path = require("path");
 
 const getTemplate = (templateName, variables = {}) => {
 
-    // Leer el archivo JSON de configuración
     const jsonPath = path.join(
         process.cwd(),
         "public",
@@ -15,7 +14,6 @@ const getTemplate = (templateName, variables = {}) => {
         fs.readFileSync(jsonPath, "utf8")
     );
 
-    // Leer el archivo HTML
     const htmlPath = path.join(
         process.cwd(),
         "public",
@@ -28,27 +26,14 @@ const getTemplate = (templateName, variables = {}) => {
         "utf8"
     );
 
-    // Reemplazar los valores por defecto del JSON
-    for (const key in json.params) {
-        html = html.replaceAll(
-            key,
-            json.params[key]
-        );
-    }
-
-    // Reemplazar las variables enviadas desde el controlador
-    for (const key in variables) {
-        html = html.replaceAll(
-            key,
-            variables[key]
-        );
-    }
+    // Reemplazar únicamente las variables enviadas
+    Object.keys(variables).forEach((key) => {
+        html = html.replaceAll(key, variables[key]);
+    });
 
     return {
         subject: json.subject,
-       
         html
-
     };
 };
 

@@ -1,10 +1,4 @@
 {
-    "subject": "Confirma tu cuenta en OVIADSO",
-    "html": "confirmEmail.html",
-    "params": {
-        "@nombreEmpresa": "",
-        "@name": "",
-        "@link": "",
-        "@nameBtn": ""
-    }
+  "subject": "Confirma tu cuenta en OVIADSO",
+  "html": "confirmEmail.html"
 }

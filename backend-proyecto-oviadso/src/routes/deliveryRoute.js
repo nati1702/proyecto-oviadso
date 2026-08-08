@@ -1,27 +1,65 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllDeliveries,
     getDeliveryById,
-    createDelivery, 
+    createDelivery,
     updateDelivery,
     deleteDelivery
 } = require("../controllers/deliveryController.js");
 
-// Obtener todos los deliveries
-router.get("/deliveries", getAllDeliveries);
 
-// Obtener delivery por ID
-router.get("/deliveries/:id", getDeliveryById);
+// ==========================================
+// OBTENER TODOS LOS PARTOS
+// ==========================================
+router.get(
+    "/deliveries",
+    verifyToken,
+    getAllDeliveries
+);
 
-// Crear delivery
-router.post("/deliveries", createDelivery);
 
-// Actualizar delivery
-router.put("/deliveries/:id", updateDelivery);
+// ==========================================
+// OBTENER PARTO POR ID
+// ==========================================
+router.get(
+    "/deliveries/:id",
+    verifyToken,
+    getDeliveryById
+);
 
-// Inactivar delivery
-router.delete("/deliveries/:id", deleteDelivery);
+
+// ==========================================
+// CREAR PARTO
+// ==========================================
+router.post(
+    "/deliveries",
+    verifyToken,
+    createDelivery
+);
+
+
+// ==========================================
+// ACTUALIZAR PARTO
+// ==========================================
+router.put(
+    "/deliveries/:id",
+    verifyToken,
+    updateDelivery
+);
+
+
+// ==========================================
+// INACTIVAR PARTO
+// ==========================================
+router.delete(
+    "/deliveries/:id",
+    verifyToken,
+    deleteDelivery
+);
+
 
 module.exports = router;

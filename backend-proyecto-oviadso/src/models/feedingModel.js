@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const db = require("../config/conectionDB");
 
 const Feeding = db.define(
-    "feeding",
+    "feedings",
     {
         id: {
             type: DataTypes.INTEGER,
@@ -48,7 +48,7 @@ const Feeding = db.define(
         }
     },
     {
-        tableName: "feeding",
+        tableName: "feedings",
         freezeTableName: true,
         timestamps: true
     }

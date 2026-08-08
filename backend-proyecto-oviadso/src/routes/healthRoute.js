@@ -1,5 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllHealths,
@@ -9,19 +11,55 @@ const {
     deleteHealth
 } = require("../controllers/healthController.js");
 
-// Obtener todos los registros de salud
-router.get("/healths", getAllHealths);
 
-// Obtener registro de salud por ID
-router.get("/healths/:id", getHealthById);
+// ==========================================
+// OBTENER TODOS LOS REGISTROS DE SALUD
+// ==========================================
+router.get(
+    "/healths",
+    verifyToken,
+    getAllHealths
+);
 
-// Crear registro de salud
-router.post("/healths", createHealth);
 
-// Actualizar registro de salud
-router.put("/healths/:id", updateHealth);
+// ==========================================
+// OBTENER REGISTRO DE SALUD POR ID
+// ==========================================
+router.get(
+    "/healths/:id",
+    verifyToken,
+    getHealthById
+);
 
-// Eliminar registro de salud
-router.delete("/healths/:id", deleteHealth);
+
+// ==========================================
+// CREAR REGISTRO DE SALUD
+// ==========================================
+router.post(
+    "/healths",
+    verifyToken,
+    createHealth
+);
+
+
+// ==========================================
+// ACTUALIZAR REGISTRO DE SALUD
+// ==========================================
+router.put(
+    "/healths/:id",
+    verifyToken,
+    updateHealth
+);
+
+
+// ==========================================
+// INACTIVAR REGISTRO DE SALUD
+// ==========================================
+router.delete(
+    "/healths/:id",
+    verifyToken,
+    deleteHealth
+);
+
 
 module.exports = router;

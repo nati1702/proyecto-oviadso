@@ -1,5 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllResponsibles,
@@ -10,18 +12,18 @@ const {
 } = require("../controllers/responsiblesController.js");
 
 // Obtener todos
-router.get("/responsibles", getAllResponsibles);
+router.get("/responsibles", verifyToken, getAllResponsibles);
 
 // Obtener por ID
-router.get("/responsibles/:id", getResponsibleById);
+router.get("/responsibles/:id", verifyToken, getResponsibleById);
 
 // Crear
-router.post("/responsibles", createResponsible);
+router.post("/responsibles", verifyToken, createResponsible);
 
 // Actualizar
-router.put("/responsibles/:id", updateResponsible);
+router.put("/responsibles/:id", verifyToken, updateResponsible);
 
-// Eliminar
-router.delete("/responsibles/:id", deleteResponsible);
+// Inactivar
+router.delete("/responsibles/:id", verifyToken, deleteResponsible);
 
 module.exports = router;

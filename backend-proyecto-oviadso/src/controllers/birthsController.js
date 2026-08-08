@@ -1,4 +1,6 @@
 const {
+    getAllBirths: getAllBirthsService,
+    getBirthById: getBirthByIdService,
     createBirthService,
     updateBirth: updateBirthService,
     deleteBirth: deleteBirthService
@@ -6,25 +8,88 @@ const {
 
 const { Response } = require("../functions/response");
 
-const getAllBirths = (req, res) => {
+// Obtener todos los nacimientos
+const getAllBirths = async (req, res) => {
 
-    const body = req.body;
-    console.log("Body recibido:", body);
+    try {
 
-    res.status(200).json({
-        mensaje: "Obteniendo todos los nacimientos"
-    });
+        const births = await getAllBirthsService();
+
+        const response = new Response(
+            true,
+            "Registros de nacimientos obtenidos exitosamente",
+            births,
+            null
+        );
+
+        return res.status(200).json(response.json);
+
+    } catch (error) {
+
+        console.error(error);
+
+        const response = new Response(
+            false,
+            "Error al obtener los registros de nacimientos",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
+
+    }
+
 };
 
-const getBirthById = (req, res) => {
+// Obtener nacimiento por ID
+const getBirthById = async (req, res) => {
 
-    const { id } = req.params;
+    try {
 
-    res.json({
-        mensaje: `Obteniendo el nacimiento con ID: ${id}`
-    });
+        const { id } = req.params;
+
+        const birth = await getBirthByIdService(id);
+
+        if (!birth) {
+
+            const response = new Response(
+                false,
+                "Nacimiento no encontrado",
+                null,
+                null
+            );
+
+            return res.status(404).json(response.json);
+
+        }
+
+        const response = new Response(
+            true,
+            "Nacimiento obtenido exitosamente",
+            birth,
+            null
+        );
+
+        return res.status(200).json(response.json);
+
+    } catch (error) {
+
+        console.error(error);
+
+        const response = new Response(
+            false,
+            "Error al obtener el nacimiento",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
+
+    }
+
 };
 
+// Crear nacimiento
 const createBirth = async (req, res) => {
 
     const {
@@ -40,114 +105,93 @@ const createBirth = async (req, res) => {
 
     let errors = [];
 
-    if (!date || !ovine_id || !mother_id || !weight || !status || !postJob || !active  || !notes) {
-        errors.push("Todos los campos son obligatorios");
-    }
-
-    if (date === "") errors.push("El campo date no puede estar vacío");
-    if (ovine_id === "") errors.push("El campo ovine_id no puede estar vacío");
-    if (mother_id === "") errors.push("El campo mother_id no puede estar vacío");
-    if (weight === "") errors.push("El campo weight no puede estar vacío");
-    if (status === "") errors.push("El campo status no puede estar vacío");
-    if (postJob === "") errors.push("El campo postJob no puede estar vacío");
-    if (active === "") errors.push("El campo active no puede estar vacío");
-    if (notes === "") errors.push("El campo notes no puede estar vacío");
+    if (!date) errors.push("La fecha es obligatoria");
+    if (!ovine_id) errors.push("El ID del ovino es obligatorio");
+    if (!mother_id) errors.push("El ID de la madre es obligatorio");
+    if (!weight) errors.push("El peso es obligatorio");
+    if (!status) errors.push("El estado es obligatorio");
+    if (!postJob) errors.push("El procedimiento es obligatorio");
+    if (active === undefined) errors.push("El estado activo es obligatorio");
 
     if (errors.length > 0) {
 
         const response = new Response(
             false,
-            "Error al crear el registro de nacimiento",
+            "Error al crear el nacimiento",
+            null,
             errors
         );
 
         return res.status(400).json(response.json);
-    }
 
-    const data = {
-        date,
-        ovine_id,
-        mother_id,
-        weight,
-        status,
-        postJob,
-        active,
-        notes
-    };
+    }
 
     try {
 
-        const birth = await createBirthService(data);
+        const birth = await createBirthService(req.body);
 
         const response = new Response(
             true,
             "Nacimiento registrado exitosamente",
-            birth
+            birth,
+            null
         );
 
         return res.status(201).json(response.json);
 
     } catch (error) {
 
-        console.error("Error al registrar el nacimiento:", error);
+        console.error(error);
 
         const response = new Response(
             false,
             "Error interno al registrar el nacimiento",
+            null,
             error.message
         );
 
         return res.status(500).json(response.json);
+
     }
+
 };
 
+// Actualizar nacimiento
 const updateBirth = async (req, res) => {
 
     try {
 
         const { id } = req.params;
 
-        const {
-           date,
-           ovine_id,
-           mother_id,
-           weight,
-           status,
-           postJob,
-           active,
-           notes
-        } = req.body;
+        const updatedBirth = await updateBirthService(id, req.body);
 
-        const updatedBirth = await updateBirthService(id, {
-            date,
-            ovine_id,
-            mother_id,
-            weight,
-            status,
-            postJob,
-            active,
-            notes
-        });
+        const response = new Response(
+            true,
+            `Nacimiento actualizado con ID ${id}`,
+            updatedBirth,
+            null
+        );
 
-        return res.status(200).json({
-            mensaje: `Nacimiento actualizado con ID: ${id}`,
-            birth: updatedBirth
-        });
+        return res.status(200).json(response.json);
 
     } catch (error) {
 
-        console.error("Error al actualizar el nacimiento:", error);
+        console.error(error);
 
         const response = new Response(
             false,
-            "Error interno al actualizar el nacimiento",
+            "Error al actualizar el nacimiento",
+            null,
             error.message
         );
 
         return res.status(500).json(response.json);
+
     }
+
 };
 
+// Eliminar (Inactivar)
 const deleteBirth = async (req, res) => {
 
     try {
@@ -157,23 +201,42 @@ const deleteBirth = async (req, res) => {
         const [updated] = await deleteBirthService(id);
 
         if (updated === 0) {
-            return res.status(404).json({
-                mensaje: "Nacimiento no encontrado"
-            });
+
+            const response = new Response(
+                false,
+                "Nacimiento no encontrado",
+                null,
+                null
+            );
+
+            return res.status(404).json(response.json);
+
         }
 
-        return res.status(200).json({
-            mensaje: `Nacimiento con ID ${id} inactivado correctamente`
-        });
+        const response = new Response(
+            true,
+            `Nacimiento con ID ${id} inactivado correctamente`,
+            null,
+            null
+        );
+
+        return res.status(200).json(response.json);
 
     } catch (error) {
 
         console.error(error);
 
-        return res.status(500).json({
-            mensaje: "Error al inactivar el nacimiento"
-        });
+        const response = new Response(
+            false,
+            "Error al inactivar el nacimiento",
+            null,
+            error.message
+        );
+
+        return res.status(500).json(response.json);
+
     }
+
 };
 
 module.exports = {

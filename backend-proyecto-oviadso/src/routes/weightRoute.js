@@ -1,5 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllWeights,
@@ -10,18 +12,18 @@ const {
 } = require("../controllers/weightController.js");
 
 // Obtener todos los pesos
-router.get("/weights", getAllWeights);
+router.get("/weights", verifyToken, getAllWeights);
 
 // Obtener peso por ID
-router.get("/weights/:id", getWeightById);
+router.get("/weights/:id", verifyToken, getWeightById);
 
 // Crear peso
-router.post("/weights", createWeight);
+router.post("/weights", verifyToken, createWeight);
 
 // Actualizar peso
-router.put("/weights/:id", updateWeight);
+router.put("/weights/:id", verifyToken, updateWeight);
 
-// Eliminar peso
-router.delete("/weights/:id", deleteWeight);
+// Inactivar peso
+router.delete("/weights/:id", verifyToken, deleteWeight);
 
 module.exports = router;

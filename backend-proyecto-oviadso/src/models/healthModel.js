@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const db = require("../config/conectionDB");
 
 const Health = db.define(
-    "health",
+    "healths",
     {
         id: {
             type: DataTypes.INTEGER,
@@ -67,7 +67,7 @@ const Health = db.define(
         }
     },
     {
-        tableName: "health",
+        tableName: "healths",
         freezeTableName: true,
         timestamps: true
     }

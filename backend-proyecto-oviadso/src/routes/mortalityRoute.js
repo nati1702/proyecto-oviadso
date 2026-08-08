@@ -1,5 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllMortalities,
@@ -9,19 +11,55 @@ const {
     deleteMortality
 } = require("../controllers/mortalityController.js");
 
-// Obtener todos los registros de mortalidad
-router.get("/mortalities", getAllMortalities);
 
-// Obtener registro de mortalidad por ID
-router.get("/mortalities/:id", getMortalityById);
+// ==========================================
+// OBTENER TODAS LAS MORTALIDADES
+// ==========================================
+router.get(
+    "/mortalities",
+    verifyToken,
+    getAllMortalities
+);
 
-// Crear registro de mortalidad
-router.post("/mortalities", createMortality);
 
-// Actualizar registro de mortalidad
-router.put("/mortalities/:id", updateMortality);
+// ==========================================
+// OBTENER MORTALIDAD POR ID
+// ==========================================
+router.get(
+    "/mortalities/:id",
+    verifyToken,
+    getMortalityById
+);
 
-// Eliminar registro de mortalidad
-router.delete("/mortalities/:id", deleteMortality);
+
+// ==========================================
+// CREAR MORTALIDAD
+// ==========================================
+router.post(
+    "/mortalities",
+    verifyToken,
+    createMortality
+);
+
+
+// ==========================================
+// ACTUALIZAR MORTALIDAD
+// ==========================================
+router.put(
+    "/mortalities/:id",
+    verifyToken,
+    updateMortality
+);
+
+
+// ==========================================
+// INACTIVAR MORTALIDAD
+// ==========================================
+router.delete(
+    "/mortalities/:id",
+    verifyToken,
+    deleteMortality
+);
+
 
 module.exports = router;

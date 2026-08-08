@@ -1,5 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllBirths,
@@ -10,18 +12,18 @@ const {
 } = require("../controllers/birthsController.js");
 
 // Obtener todos los nacimientos
-router.get("/births", getAllBirths);
+router.get("/births", verifyToken, getAllBirths);
 
 // Obtener nacimiento por ID
-router.get("/births/:id", getBirthById);
+router.get("/births/:id", verifyToken, getBirthById);
 
 // Crear nacimiento
-router.post("/births", createBirth);
+router.post("/births", verifyToken, createBirth);
 
 // Actualizar nacimiento
-router.put("/births/:id", updateBirth);
+router.put("/births/:id", verifyToken, updateBirth);
 
-// Eliminar nacimiento
-router.delete("/births/:id", deleteBirth);
+// Inactivar nacimiento
+router.delete("/births/:id", verifyToken, deleteBirth);
 
 module.exports = router;

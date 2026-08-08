@@ -1,5 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+
+const verifyToken = require("../middlewares/verifyToken");
 
 const {
     getAllFeedings,
@@ -10,18 +12,38 @@ const {
 } = require("../controllers/feedingController.js");
 
 // Obtener todas las alimentaciones
-router.get("/feedings", getAllFeedings);
+router.get(
+    "/feedings",
+    verifyToken,
+    getAllFeedings
+);
 
 // Obtener alimentación por ID
-router.get("/feedings/:id", getFeedingById);
+router.get(
+    "/feedings/:id",
+    verifyToken,
+    getFeedingById
+);
 
 // Crear alimentación
-router.post("/feedings", createFeeding);
+router.post(
+    "/feedings",
+    verifyToken,
+    createFeeding
+);
 
 // Actualizar alimentación
-router.put("/feedings/:id", updateFeeding);
+router.put(
+    "/feedings/:id",
+    verifyToken,
+    updateFeeding
+);
 
-// Eliminar alimentación
-router.delete("/feedings/:id", deleteFeeding);
+// Inactivar alimentación
+router.delete(
+    "/feedings/:id",
+    verifyToken,
+    deleteFeeding
+);
 
 module.exports = router;
