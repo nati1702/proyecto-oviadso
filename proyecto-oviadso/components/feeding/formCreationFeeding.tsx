@@ -14,7 +14,6 @@ function FormCreationFeeding() {
     notes: ""
   });
 
-
   const handleChange = (e: any) => {
 
     const { name, value } = e.target;
@@ -26,12 +25,9 @@ function FormCreationFeeding() {
 
   };
 
-
-
   const handleSubmit = async (e: any) => {
 
     e.preventDefault();
-
 
     try {
 
@@ -39,27 +35,20 @@ function FormCreationFeeding() {
         "http://localhost:3000/api/feeding/feedings",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json"
           },
-
           body: JSON.stringify(formData)
-
         }
       );
 
-
       const data = await response.json();
-
 
       console.log(data);
 
-
-      if(response.ok){
+      if (response.ok) {
 
         alert("Alimentación creada correctamente");
-
 
         setFormData({
           date: "",
@@ -71,14 +60,13 @@ function FormCreationFeeding() {
           notes: ""
         });
 
-      }else{
+      } else {
 
         alert("Error al crear alimentación");
 
       }
 
-
-    } catch(error){
+    } catch (error) {
 
       console.error(error);
 
@@ -86,32 +74,24 @@ function FormCreationFeeding() {
 
   };
 
-
-
   return (
 
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
 
+      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-xl p-8 border-t-4 border-orange-500">
 
-      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8 border-t-4 border-orange-500">
-
-
-        <h2 className="text-2xl font-bold text-orange-500 mb-6 text-center">
+        <h1 className="text-3xl font-bold text-center text-orange-500 mb-8">
           Crear Alimentación
-        </h2>
+        </h1>
 
-
-
-        <form 
+        <form
           onSubmit={handleSubmit}
-          className="space-y-5"
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
 
-
           <div>
-
-            <label className="block">
-              Fecha:
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Fecha
             </label>
 
             <input
@@ -119,17 +99,13 @@ function FormCreationFeeding() {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className="w-full rounded-lg border p-2"
+              className="w-full rounded-lg border border-orange-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-
           </div>
 
-
-
           <div>
-
-            <label>
-              ID Ovino:
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              ID Ovino
             </label>
 
             <input
@@ -137,18 +113,13 @@ function FormCreationFeeding() {
               name="ovine_id"
               value={formData.ovine_id}
               onChange={handleChange}
-              className="w-full rounded-lg border p-2"
+              className="w-full rounded-lg border border-orange-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-
           </div>
 
-
-
-
           <div>
-
-            <label>
-              Tipo de alimento:
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Tipo de alimento
             </label>
 
             <input
@@ -156,18 +127,13 @@ function FormCreationFeeding() {
               name="food_type"
               value={formData.food_type}
               onChange={handleChange}
-              className="w-full rounded-lg border p-2"
+              className="w-full rounded-lg border border-orange-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-
           </div>
 
-
-
-
           <div>
-
-            <label>
-              Cantidad:
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Cantidad
             </label>
 
             <input
@@ -175,17 +141,13 @@ function FormCreationFeeding() {
               name="quantity"
               value={formData.quantity}
               onChange={handleChange}
-              className="w-full rounded-lg border p-2"
+              className="w-full rounded-lg border border-orange-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-
           </div>
 
-
-
           <div>
-
-            <label>
-              Procedimiento:
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Procedimiento
             </label>
 
             <input
@@ -193,18 +155,13 @@ function FormCreationFeeding() {
               name="postJob"
               value={formData.postJob}
               onChange={handleChange}
-              className="w-full rounded-lg border p-2"
+              className="w-full rounded-lg border border-orange-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-
           </div>
 
-
-
-
           <div>
-
-            <label>
-              Notas:
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Notas
             </label>
 
             <input
@@ -212,33 +169,27 @@ function FormCreationFeeding() {
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              className="w-full rounded-lg border p-2"
+              className="w-full rounded-lg border border-orange-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-
           </div>
 
-
-
-          <button
-            type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-lg"
-          >
-            Crear Alimentación
-          </button>
-
-
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition duration-300 shadow-md"
+            >
+              Crear Alimentación
+            </button>
+          </div>
 
         </form>
 
-
       </div>
-
 
     </div>
 
   );
 
 }
-
 
 export default FormCreationFeeding;

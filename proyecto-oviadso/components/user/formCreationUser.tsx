@@ -8,9 +8,7 @@ function FormCreationUser() {
           Crear Usuario
         </h2>
 
-
         <form className="space-y-5">
-
 
           <div>
             <label
@@ -24,10 +22,10 @@ function FormCreationUser() {
               type="text"
               id="username"
               name="username"
+              placeholder="Ingrese el nombre de usuario"
               className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
 
           <div>
             <label
@@ -41,10 +39,10 @@ function FormCreationUser() {
               type="email"
               id="email"
               name="email"
+              placeholder="Ingrese el correo electrónico"
               className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
 
           <div>
             <label
@@ -58,10 +56,10 @@ function FormCreationUser() {
               type="password"
               id="password"
               name="password"
+              placeholder="Ingrese la contraseña"
               className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
 
           <div>
             <label
@@ -71,14 +69,17 @@ function FormCreationUser() {
               Rol:
             </label>
 
-            <input
-              type="text"
+            <select
               id="role"
               name="role"
               className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+            >
+              <option value="">Seleccione un rol</option>
+              <option value="aprendiz">Aprendiz</option>
+              <option value="instructor">Instructor</option>
+              <option value="administrador">Administrador</option>
+            </select>
           </div>
-
 
           <div>
             <label
@@ -88,14 +89,16 @@ function FormCreationUser() {
               Estado:
             </label>
 
-            <input
-              type="text"
+            <select
               id="status"
               name="status"
               className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+            >
+              <option value="">Seleccione un estado</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
           </div>
-
 
           <button
             type="submit"
@@ -103,7 +106,6 @@ function FormCreationUser() {
           >
             Crear Usuario
           </button>
-
 
         </form>
 

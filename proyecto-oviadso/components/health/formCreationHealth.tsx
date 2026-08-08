@@ -4,14 +4,11 @@ function FormCreationHealth() {
 
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8 border-t-4 border-orange-500">
 
-
         <h2 className="text-2xl font-bold text-orange-500 mb-6 text-center">
           Crear Salud
         </h2>
 
-
         <form className="space-y-5">
-
 
           <div>
             <label
@@ -29,8 +26,6 @@ function FormCreationHealth() {
             />
           </div>
 
-
-
           <div>
             <label
               htmlFor="livestock_id"
@@ -46,8 +41,6 @@ function FormCreationHealth() {
               className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
-
-
 
           <div>
             <label
@@ -65,8 +58,6 @@ function FormCreationHealth() {
             />
           </div>
 
-
-
           <div>
             <label
               htmlFor="treatment"
@@ -83,7 +74,24 @@ function FormCreationHealth() {
             />
           </div>
 
+          <div>
+            <label
+              htmlFor="status"
+              className="block text-sm font-semibold text-gray-700 mb-1"
+            >
+              Estado:
+            </label>
 
+            <select
+              id="status"
+              name="status"
+              className="w-full rounded-lg border border-orange-300 p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="">Seleccione un estado</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
 
           <div>
             <label
@@ -101,15 +109,12 @@ function FormCreationHealth() {
             />
           </div>
 
-
-
           <button
             type="submit"
             className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-lg transition duration-300 shadow-md"
           >
             Crear Salud
           </button>
-
 
         </form>
 
